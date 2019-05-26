@@ -4,7 +4,8 @@ import grpc
 import os
 import codecs
 import json
-from parse_response import response_parser
+from response_parse.parse_response import response_parser
+from neo.neo4jobj import Neo4J
 
 # Due to updated ECDSA generated tls.cert we need to let gprc know that
 # we need to use that cipher suite otherwise there will be a handhsake
@@ -33,5 +34,15 @@ response = stub.DescribeGraph(request, metadata=[('macaroon', macaroon)])
 #parsing part of the script
 parser = response_parser(response)
 nodes = parser.parseNodes()
-parser.parseEdges()
+edges = parser.parseEdges()
+
+url = "bolt://127.0.0.1:7687"
+print("Connecting")
+global graph
+graph = Neo4J(url, "neo4j", "neorules")
+print("Connected")
+
+for node in nodes:
+    print(node)
+    graph.saveSingleNode(node)
 

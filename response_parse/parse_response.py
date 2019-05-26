@@ -11,15 +11,27 @@ class response_parser():
     def parseNodes(self):
         nodes_list = []
         for node in self.nodes:
-            #print(node)
+            dic = {}
+
             d = {
                 "pubKey": node.pub_key,
-                "lastUdate" : node.last_update if node.last_update else None,
+                "lastUpdate" : node.last_update if node.last_update else None,
                 "alias" : node.alias if node.alias else None,
-                "color" : node.color if node.color else None,
-                "addresses" : node.addresses if node.addresses else None
+                "color" : node.color if node.color else None
                 #addresses keys "network, "addr"
                 }
+            if node.addresses:
+                network = []
+                addr = []
+                for pair in node.addresses:
+                    if pair.network: network.append(pair.network)
+                    if pair.addr: addr.append(pair.addr) 
+
+                addresses = {
+                    "network": network if len(network)>0 else None,
+                    "addr": addr if len(addr)>0 else None
+                }
+                d = {**d, **addresses}
 
             nodes_list.append(d)
         print(len(nodes_list))
@@ -59,3 +71,6 @@ class response_parser():
                 "node2Policy": edge.node2_policy if edge.node2_policy else None
                 # nodeXPolicy keys "time_lock_delta", "min_htlc", "fee_rate_milli_msat", "max_htlc_msat", optional "disabled" bool
             }
+            edges_list.append(d)
+        print(len(edges_list))
+        return edges_list
