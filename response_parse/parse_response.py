@@ -25,7 +25,7 @@ class response_parser():
                 addr = []
                 for pair in node.addresses:
                     if pair.network: network.append(pair.network)
-                    if pair.addr: addr.append(pair.addr) 
+                    if pair.addr: addr.append(pair.addr)
 
                 addresses = {
                     "network": network if len(network)>0 else None,
