@@ -63,7 +63,7 @@ class response_parser():
             d = {
                 "chanID": edge.channel_id,
                 "chanPoint": edge.chan_point if edge.chan_point else None,
-                "lastUdate": edge.last_update if edge.last_update else None,
+                "lastUpdate": edge.last_update if edge.last_update else None,
                 "node1Pub": edge.node1_pub if edge.node1_pub else None,
                 "node2Pub": edge.node2_pub if edge.node2_pub else None,
                 "capacity": edge.capacity if edge.capacity else None,
@@ -115,6 +115,6 @@ class response_parser():
                 }
                 d = {**d, **node2policy}
             edges_list.append(d)
-            
+
         print(len(edges_list))
         return edges_list
