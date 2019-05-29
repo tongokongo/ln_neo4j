@@ -72,17 +72,17 @@ class response_parser():
                 # nodeXPolicy keys "time_lock_delta", "min_htlc", "fee_rate_milli_msat", "max_htlc_msat", optional "disabled" bool
             }
             if edge.node1_policy:
+                args = edge.node1_policy
                 tld1 = []
                 minHtlc1 = []
                 fbMsat1 = []
                 frmMsat1 = []
                 mHtlcMsat1 = []
-                for args in edge.node1_policy:
-                    if args.time_lock_delta: tld1.append(args.time_lock_delta)
-                    if args.min_htlc: minHtlc1.append(args.min_htlc)
-                    if args.fee_base_msat: fbMsat1.append(args.fee_base_msat)
-                    if args.fee_rate_milli_msat: frmMsat1.append(args.fee_rate_milli_msat)
-                    if args.max_htlc_msat: mHtlcMsat1.append(args.max_htlc_msat)
+                if args.time_lock_delta: tld1.append(args.time_lock_delta)
+                if args.min_htlc: minHtlc1.append(args.min_htlc)
+                if args.fee_base_msat: fbMsat1.append(args.fee_base_msat)
+                if args.fee_rate_milli_msat: frmMsat1.append(args.fee_rate_milli_msat)
+                if args.max_htlc_msat: mHtlcMsat1.append(args.max_htlc_msat)
 
                 node1policy = {
                     "timeLockDelta1": tld1 if len(tld1)>0 else None,
@@ -94,19 +94,20 @@ class response_parser():
                 d = {**d, **node1policy}
 
             if edge.node2_policy:
+                args=edge.node2_policy
                 tld2 = []
                 minHtlc2 = []
                 fbMsat2 = []
                 frmMsat2 = []
                 mHtlcMsat2 = []
-                for args in edge.node2_policy:
-                    if args.time_lock_delta: tld2.append(args.time_lock_delta)
-                    if args.min_htlc: minHtlc2.append(args.min_htlc)
-                    if args.fee_base_msat: fbMsat2.append(args.fee_base_msat)
-                    if args.fee_rate_milli_msat: frmMsat2.append(args.fee_rate_milli_msat)
-                    if args.max_htlc_msat: mHtlcMsat2.append(args.max_htlc_msat)
 
-                node1policy = {
+                if args.time_lock_delta: tld2.append(args.time_lock_delta)
+                if args.min_htlc: minHtlc2.append(args.min_htlc)
+                if args.fee_base_msat: fbMsat2.append(args.fee_base_msat)
+                if args.fee_rate_milli_msat: frmMsat2.append(args.fee_rate_milli_msat)
+                if args.max_htlc_msat: mHtlcMsat2.append(args.max_htlc_msat)
+
+                node2policy = {
                     "timeLockDelta2": tld2 if len(tld2)>0 else None,
                     "minHtlc2": minHtlc2 if len(minHtlc2)>0 else None,
                     "feeBaseMsat2": fbMsat2 if len(fbMsat2)>0 else None,

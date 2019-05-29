@@ -42,7 +42,14 @@ global graph
 graph = Neo4J(url, "neo4j", "neorules")
 print("Connected")
 
-for node in nodes:
-    print(node)
-    graph.saveSingleNode(node)
+# for node in nodes:
+#     print(node)
+#     graph.saveSingleNode(node)
+
+count = 0
+for edge in edges:
+    if count < 1000:
+        print(edge)
+        graph.saveSingleChannel(edge)
+    count += 1
 
