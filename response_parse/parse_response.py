@@ -66,55 +66,31 @@ class response_parser():
                 "lastUpdate": edge.last_update if edge.last_update else None,
                 "node1Pub": edge.node1_pub if edge.node1_pub else None,
                 "node2Pub": edge.node2_pub if edge.node2_pub else None,
-                "capacity": edge.capacity if edge.capacity else None,
-                "node1Policy": edge.node1_policy if edge.node1_policy else None,
-                "node2Policy": edge.node2_policy if edge.node2_policy else None
+                "capacity": edge.capacity if edge.capacity else None
                 # nodeXPolicy keys "time_lock_delta", "min_htlc", "fee_rate_milli_msat", "max_htlc_msat", optional "disabled" bool
             }
             if edge.node1_policy:
-                args = edge.node1_policy
-                tld1 = []
-                minHtlc1 = []
-                fbMsat1 = []
-                frmMsat1 = []
-                mHtlcMsat1 = []
-                if args.time_lock_delta: tld1.append(args.time_lock_delta)
-                if args.min_htlc: minHtlc1.append(args.min_htlc)
-                if args.fee_base_msat: fbMsat1.append(args.fee_base_msat)
-                if args.fee_rate_milli_msat: frmMsat1.append(args.fee_rate_milli_msat)
-                if args.max_htlc_msat: mHtlcMsat1.append(args.max_htlc_msat)
-
+                node1= edge.node1_policy
                 node1policy = {
-                    "timeLockDelta1": tld1 if len(tld1)>0 else None,
-                    "minHtlc1": minHtlc1 if len(minHtlc1)>0 else None,
-                    "feeBaseMsat1": fbMsat1 if len(fbMsat1)>0 else None,
-                    "feeRateMilliMsat1": frmMsat1 if len(frmMsat1)>0 else None,
-                    "maxHtlcMsat1": mHtlcMsat1 if len(mHtlcMsat1)>0 else None
+                    "timeLockDelta1": node1.time_lock_delta if node1.time_lock_delta else None,
+                    "minHtlc1": node1.min_htlc if node1.min_htlc else None,
+                    "feeBaseMsat1": node1.fee_base_msat if node1.fee_base_msat else None,
+                    "feeRateMilliMsat1": node1.fee_rate_milli_msat if node1.fee_rate_milli_msat else None,
+                    "maxHtlcMsat1": node1.max_htlc_msat if node1.max_htlc_msat else None
                 }
                 d = {**d, **node1policy}
 
             if edge.node2_policy:
-                args=edge.node2_policy
-                tld2 = []
-                minHtlc2 = []
-                fbMsat2 = []
-                frmMsat2 = []
-                mHtlcMsat2 = []
-
-                if args.time_lock_delta: tld2.append(args.time_lock_delta)
-                if args.min_htlc: minHtlc2.append(args.min_htlc)
-                if args.fee_base_msat: fbMsat2.append(args.fee_base_msat)
-                if args.fee_rate_milli_msat: frmMsat2.append(args.fee_rate_milli_msat)
-                if args.max_htlc_msat: mHtlcMsat2.append(args.max_htlc_msat)
-
+                node2= edge.node2_policy
                 node2policy = {
-                    "timeLockDelta2": tld2 if len(tld2)>0 else None,
-                    "minHtlc2": minHtlc2 if len(minHtlc2)>0 else None,
-                    "feeBaseMsat2": fbMsat2 if len(fbMsat2)>0 else None,
-                    "feeRateMilliMsat2": frmMsat2 if len(frmMsat2)>0 else None,
-                    "maxHtlcMsat2": mHtlcMsat2 if len(mHtlcMsat2)>0 else None
+                    "timeLockDelta2": node2.time_lock_delta if node2.time_lock_delta else None,
+                    "minHtlc2": node2.min_htlc if node2.min_htlc else None,
+                    "feeBaseMsat2": node2.fee_base_msat if node2.fee_base_msat else None,
+                    "feeRateMilliMsat2": node2.fee_rate_milli_msat if node2.fee_rate_milli_msat else None,
+                    "maxHtlcMsat2": node2.max_htlc_msat if node2.max_htlc_msat else None
                 }
                 d = {**d, **node2policy}
+
             edges_list.append(d)
 
         print(len(edges_list))

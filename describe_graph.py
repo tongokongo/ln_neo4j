@@ -50,6 +50,7 @@ count = 0
 for edge in edges:
     if count < 1000:
         print(edge)
+        print("\n\n\n")
         graph.saveSingleChannel(edge)
     count += 1
 
