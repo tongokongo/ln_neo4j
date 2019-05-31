@@ -34,7 +34,7 @@ class response_parser():
                 d = {**d, **addresses}
 
             nodes_list.append(d)
-        print(len(nodes_list))
+        #print(len(nodes_list))
         return nodes_list
 
     '''channel_id: 635198862672003073
@@ -93,5 +93,5 @@ class response_parser():
 
             edges_list.append(d)
 
-        print(len(edges_list))
+        #print(len(edges_list))
         return edges_list
