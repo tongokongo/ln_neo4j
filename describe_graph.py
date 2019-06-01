@@ -22,7 +22,7 @@ def edgesToNeo(edges):
     for edge in edges:
         if count >= 0:
             #print(edge)
-            print("\n\n\n")
+            #print("\n\n\n")
             graph.saveSingleChannel(edge)
         count += 1
 
@@ -60,13 +60,16 @@ graph = Neo4J(url, "neo4j", "neorules")
 print("Connected")
 
 
+#delete all nodes temporary solution TODO: make historical snapshots of a graph
+graph.deleteAll()
+
 #parsing part of the script
 parser = response_parser(response)
 nodes = parser.parseNodes()
 edges = parser.parseEdges()
 print("There are " + str(len(nodes)) + " nodes and " + str(len(edges)) + " edges. \n")
 
-nodesToNeo(nodes)
-edgesToNeo(edges)
+#nodesToNeo(nodes)
+#edgesToNeo(edges)
 
 

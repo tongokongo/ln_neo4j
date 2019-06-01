@@ -34,3 +34,11 @@ class Neo4J:
                        dict = edge)
 
                 #print("Edge saved")
+
+    def deleteAll(self):
+        with self._driver.session() as session:
+            with session.begin_transaction() as tx:
+                tx.run('''  MATCH (n) 
+                            DETACH DELETE n ''')
+
+                print("All nodes and relations deleted")
