@@ -4,6 +4,7 @@ import grpc
 import os
 import codecs
 import json
+import argparse
 from response_parse.parse_response import response_parser
 from neo.neo4jobj import Neo4J
 
@@ -26,6 +27,14 @@ def edgesToNeo(edges):
             graph.saveSingleChannel(edge)
         count += 1
 
+#parsing terminal arguments using argparse module
+parser = argparse.ArgumentParser(description='Python lightning network topology export to Neo4j')
+parser.add_argument('--neo-address', type=str, dest='url', default="bolt://127.0.0.1:7687",
+                    help='Connections string for the Neo4J server')
+parser.add_argument('--neo-user', type=str, dest='user', default='neo4j', help='Neo4J Username')
+parser.add_argument('--neo-password', type=str, dest='password', default='neo4j', help='Neo4J Password')
+parser.add_argument('--clean-db', type=str, dest='clean_db', default='n', help='Delete all nodes and relations')
+args = parser.parse_args()
 
 # Due to updated ECDSA generated tls.cert we need to let gprc know that
 # we need to use that cipher suite otherwise there will be a handhsake
@@ -56,12 +65,15 @@ response = stub.DescribeGraph(request, metadata=[('macaroon', macaroon)])
 url = "bolt://127.0.0.1:7687"
 print("Connecting...")
 global graph
-graph = Neo4J(url, "neo4j", "neorules")
+graph = Neo4J(args.url, args.user, args.password)
 print("Connected")
 
 
 #delete all nodes temporary solution TODO: make historical snapshots of a graph
-graph.deleteAll()
+if args.clean_db == "y":
+    print("Cleaning the DB...")
+    graph.deleteAll()
+
 
 #parsing part of the script
 parser = response_parser(response)
@@ -69,7 +81,5 @@ nodes = parser.parseNodes()
 edges = parser.parseEdges()
 print("There are " + str(len(nodes)) + " nodes and " + str(len(edges)) + " edges. \n")
 
-#nodesToNeo(nodes)
-#edgesToNeo(edges)
-
-
+nodesToNeo(nodes)
+edgesToNeo(edges)
