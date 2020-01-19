@@ -1,0 +1,136 @@
+# Download Bitcoin Core packages for Ubuntu
+wget https://bitcoincore.org/bin/bitcoin-core-0.19.0.1/bitcoin-0.19.0.1-x86_64-linux-gnu.tar.gz
+
+# check the checksum and fingerprint //optional
+wget https://bitcoincore.org/bin/bitcoin-core-0.19.0.1/SHA256SUMS.asc
+wget https://bitcoin.org/laanwj-releases.asc
+sha256sum --check SHA256SUMS.asc --ignore-missing
+    >expected: xxx.tar.gz: OK
+gpg --import ./laanwj-releases.asc
+gpg --refresh-keys
+gpg --verify SHA256SUMS.asc
+    >expected: Good signature from "Wladimir J. van der Laan ..."
+
+# extract, install and check versions of the binaries
+tar -xvf bitcoin-0.19.0.1-x86_64-linux-gnu.tar.gz
+sudo install -m 0755 -o root -t /usr/local/bin bitcoin-0.19.0.1/bin/*
+bitcoind --version
+    >expected: Bitcoin Core version x0.19.0.1
+    
+#prepare config
+ 
+mkdir ~/.bitcoin
+curl -s http://whatismyip.akamai.com/
+    >copy the result (IP address)
+nano ~/.bitcoin/bitcoin.conf
+    #bitcoin conf
+    daemon=1
+    txindex=1
+    server=1
+    
+    rpcuser=change_rpcdefault
+    rpcpassword=change_rpcdefault
+    
+    zmqpubrawblock=tcp://127.0.0.1:29000
+    zmqpubrawtx=tcp://127.0.0.1:29001
+    
+    externalip = copied_IP_address
+    #datadir = /mnt/xxx/bitcoin //optional for external volume for bitcoin data
+    
+    minrelaytxfee=0.00000000
+    incrementalrelayfee=0.00000010
+
+    # Optimizations
+    dbcache=2000
+    maxuploadtarget=5000
+    maxconnections=40
+    
+# run bitcoind 
+screen -S bitcoind
+bitcoind
+    >exit the screen
+
+# check if bitcoind running
+bitcoin-cli getblockchaininfo
+
+
+# Download LND packages for Ubuntu
+wget https://github.com/lightningnetwork/lnd/releases/download/v0.9.0-beta-rc2/lnd-linux-amd64-v0.9.0-beta-rc2.tar.gz
+
+# check the checksum and fingerprint //optional
+wget https://github.com/lightningnetwork/lnd/releases/download/v0.9.0-beta-rc2/manifest-v0.9.0-beta-rc2.txt
+wget https://github.com/lightningnetwork/lnd/releases/download/v0.9.0-beta-rc2/manifest-v0.9.0-beta-rc2.txt.sig
+wget https://keybase.io/roasbeef/pgp_keys.asc
+sha256sum --check manifest-v0.9.0-beta-rc2.txt --ignore-missing
+    >expected: xxx.tar.gz: OK
+gpg ./pgp_keys.asc
+    >expected: 9769140D255C759B1EB77B46A96387A57CAAE94D
+gpg --import ./pgp_keys.asc    
+gpg --verify manifest-v0.8.2-beta.txt.sig
+    >expected: Good signature from "Olaoluwa Osuntokun <laolu32@gmail.com>"
+    
+# extract, install and check versions of the binaries  
+tar -xvf lnd-linux-amd64-v0.9.0-beta-rc2.tar.gz
+sudo install -m 0755 -o root -g root -t /usr/local/bin lnd-linux-amd64-v0.9.0-beta-rc2/*
+lnd --version
+    >expected lnd version 0.9.0-beta-rc2
+    
+# configure LND 
+mkdir ~/.lnd
+nano ~/.lnd/lnd.conf
+    [Application Options]
+    alias= LWQD_1☇ //visible to the rest of the network
+    color= #hexrgb //visible to the rest of the network
+    debuglevel=info
+    maxpendingchannels=5
+    listen=localhost
+    externalip=copied_IP_address //or:
+    nat=true //I wasn't able to set it up on VPS servers
+
+    [Bitcoin]
+    bitcoin.active=1
+    bitcoin.mainnet=1
+    bitcoin.node=bitcoind
+    bitcoin.defaultchanconfs=3
+    bitcoind.rpcuser=XYZ //for remote connection only
+    bitcoind.rpcpass=ZXY //for remote connections only
+    
+    [Autopilot]
+    autopilot.active=false
+    
+    [Watchtower]
+    watchtower.active=false
+    
+    [wtclient]
+
+    >more: https://github.com/lightningnetwork/lnd/blob/master/sample-lnd.conf
+
+    
+# run LND //after bitcoind fully synced
+screen -S lnd
+lnd
+    >exit the screen
+
+    
+# set-up wallet
+lncli create
+    >import seed + password + seedPassword, or create new. seedPasword can be empty, wallet password can't
+lncli unlock
+lncli getinfo
+
+
+# create and fund on-chain wallet
+lncli newaddress np2wkh
+    >expected new address -> fund it
+lncli walletbalance
+    
+#connect to a peer, create channel
+lncli connect <pubkey>@host
+lncli openchannel --sat_per_byte 2 <pubkey> sat-amt push-amt //push-amt always 0!
+
+
+
+
+
+
+    
